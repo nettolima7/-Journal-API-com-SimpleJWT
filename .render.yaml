@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: journal-api
+    env: python
+    region: oregon
+    plan: starter
+    branch: main
+    buildCommand: ./build.sh
+    startCommand: gunicorn core.wsgi:application
