@@ -7,3 +7,12 @@ services:
     branch: main
     buildCommand: ./build.sh
     startCommand: gunicorn core.wsgi:application
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: core.settings
+      - key: DEBUG
+        value: False
+      - key: ALLOWED_HOSTS
+        value: journal-api-com-simplejwt-1.onrender.com
+      - key: CSRF_TRUSTED_ORIGINS
+        value: https://journal-api-com-simplejwt-1.onrender.com
