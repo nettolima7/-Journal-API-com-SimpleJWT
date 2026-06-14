@@ -1,19 +1,35 @@
 from pathlib import Path
 from datetime import timedelta
 
+from decouple import Csv, config
+import dj_database_url
+
+SECRET_KEY = config('SECRET_KEY')
+
+DEBUG = config('DEBUG',
+                default=False, cast=bool)
+
+ALLOWED_HOSTS = config('ALLOWED_HOSTS',
+                    cast=Csv())
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-!replace_this_with_a_real_secret_key!'
-DEBUG = True
-ALLOWED_HOSTS = []
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-!replace_this_with_a-real-secret-key!')
+DEBUG = config('DEBUG', default=True, cast=bool)
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1,localhost', cast=Csv())
 ROOT_URLCONF = 'core.urls'
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
+        conn_max_age=600,
+    )
 }
+# CSRF para o domínio do Render
+CSRF_TRUSTED_ORIGINS = config(
+    'CSRF_TRUSTED_ORIGINS',
+    default='', cast=Csv()
+)
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -30,6 +46,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -55,7 +72,15 @@ TEMPLATES = [
 ]
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+STORAGES = {
+    'staticfiles': {'BACKEND':
+        'whitenoise.storage.\
+        CompressedManifestStaticFilesStorage'},
+}
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
