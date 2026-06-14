@@ -4,14 +4,6 @@ from datetime import timedelta
 from decouple import Csv, config
 import dj_database_url
 
-SECRET_KEY = config('SECRET_KEY')
-
-DEBUG = config('DEBUG',
-                default=False, cast=bool)
-
-ALLOWED_HOSTS = config('ALLOWED_HOSTS',
-                    cast=Csv())
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-!replace_this_with_a-real-secret-key!')
@@ -75,12 +67,6 @@ STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-STORAGES = {
-    'staticfiles': {'BACKEND':
-        'whitenoise.storage.\
-        CompressedManifestStaticFilesStorage'},
-}
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
